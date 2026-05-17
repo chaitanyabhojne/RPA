@@ -1,26 +1,23 @@
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-import os
+from excel_operations import ExcelOperations
+from bank_operations import BankOperations
 
-HOST = os.getenv("HOST", "127.0.0.1")
-PORT = int(os.getenv("PORT", "8000"))
-
-
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/health":
-            self.send_response(200)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(b'{"status":"ok"}')
-            return
-
-        self.send_response(200)
-        self.send_header("Content-Type", "text/plain; charset=utf-8")
-        self.end_headers()
-        self.wfile.write(b"Server is running.\n")
-
+BANK_NAME = "HDFC"
+TRANSACTION_TYPE = ["debited", "credited"]
+NO_OF_DAYS = 7
 
 if __name__ == "__main__":
-    server = ThreadingHTTPServer((HOST, PORT), Handler)
-    print(f"Starting server on http://{HOST}:{PORT}")
-    server.serve_forever()
+    print("Script started.")
+    
+    for transaction_type in TRANSACTION_TYPE:
+        print(f"Processing {transaction_type} transactions for {BANK_NAME} bank...")
+        bank_ops = BankOperations(BANK_NAME, transaction_type, NO_OF_DAYS)
+        transaction_details = bank_ops.get_bank_transaction_details()
+
+        if transaction_details:
+            excel_ops = ExcelOperations(BANK_NAME, transaction_type)
+            excel_file = excel_ops.create_excel_file()
+            excel_ops.save_transaction_details_to_excel(excel_file, transaction_details)
+        else:
+            print("No transaction details found in the emails.")
+        print("Script finished.")
+    
