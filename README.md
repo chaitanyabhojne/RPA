@@ -1,3 +1,5 @@
+<img width="2752" height="1536" alt="Automating_Financial_Records_Workflow" src="https://github.com/user-attachments/assets/77259310-8aef-4cca-8d45-a884fa3d24d1" />
+
 # HDFC Email Transaction RPA
 
 This small RPA project fetches recent HDFC bank transaction alert emails from a Gmail account, extracts debit/credit details, and saves them to an Excel file in the `output/` folder.
